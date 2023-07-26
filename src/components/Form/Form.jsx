@@ -1,18 +1,24 @@
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormStyled } from './FormStyled';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 function Form({ formAddContact }) {
-  const [nameContact, setNameContact] = useState('');
-  const [number, setNumber] = useState('');
+  const {nameContact, number} = useSelector(state => state.form);
+  // const number = useSelector(state => state.form.number);
+  // const [nameContact, setNameContact] = useState('');
+  // const [number, setNumber] = useState('');
+  const dispatch = useDispatch()
 
   const handleOnChange = evt => {
     const { name, value } = evt.currentTarget;
     if (name === 'name') {
-      setNameContact(value);
+      // setNameContact(value);
+      dispatch({ type: "form/setNameContact", payload: value });
     }
     if (name === 'number') {
-      setNumber(value);
+      // setNumber(value);
+      dispatch({ type: "form/setNumber", payload: value });
     }
   };
 
@@ -22,12 +28,15 @@ function Form({ formAddContact }) {
     reset();
   };
   const reset = () => {
-    setNameContact('');
-    setNumber('');
+    // setNameContact('');
+    // setNumber('');
+    dispatch({ type: "form/setNameContact", payload: '' });
+    dispatch({ type: "form/setNumber", payload: '' });
+
   };
 
   return (
-    <>
+    <> 
       <FormStyled onSubmit={handleOnSubmit}>
         <label>
           <span>Name</span>
