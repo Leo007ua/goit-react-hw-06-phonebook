@@ -1,26 +1,15 @@
-import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
-import Container from './Wraper/Wraper';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, deleteContact, filterContact } from 'redux/contactsSlice';
+
+import { Section } from './WraperStyled';
+import Form from './Form/Form';
+import Filter from './Filter/Filter';
+import Contacts from './Contacts/Contacts';
 
 export default function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filtered, setFiltered] = useState('');
+  const { contacts, filter } = useSelector(state => state.contacts);
 
-  useEffect(() => {
-    const getContacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(getContacts) || [];
-    setContacts(parsedContacts);
-  }, []);
-
-  useEffect(() => {
-    const stringifiedContacts = JSON.stringify(contacts);
-    localStorage.setItem('contacts', stringifiedContacts);
-
-    const checkLocal = JSON.parse(localStorage.getItem('contacts'));
-    if (checkLocal?.length <= 0) {
-      localStorage.removeItem('contacts');
-    }
-  }, [contacts]);
+  const dispatch = useDispatch();
 
   const formAddContact = contactData => {
     const search = contacts.find(contact => contact.name === contactData.name);
@@ -28,36 +17,37 @@ export default function App() {
       alert(`${contactData.name} is already in Contacts`);
       return;
     }
-    const contact = { id: nanoid(), ...contactData };
-    setContacts(prevState => [contact, ...prevState]);
+    dispatch(addContact(contactData));
   };
 
   const handleOnChangeFilter = event => {
-    setFiltered(event.currentTarget.value);
+    dispatch(filterContact(event.currentTarget.value));
   };
 
-  const getFilteredContact = () => {
-    const normalizedFilter = filtered.toLowerCase();
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
+  const normalize = filter ? filter.toLowerCase() : '';
+  const findContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalize)
+  );
 
   const onRemoveContact = contactId => {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
+    dispatch(deleteContact(contactId));
   };
 
-  const filteredContact = getFilteredContact();
   return (
     <>
-      <Container
-        formAddContact={formAddContact}
-        value={filtered}
-        handleOnChangeFilter={handleOnChangeFilter}
-        filteredContact={filteredContact}
-        contactsArray={contacts}
-        onRemoveContact={onRemoveContact}
-      />
+      <Section>
+        <h1>PhoneBook</h1>
+
+        <Form formAddContact={formAddContact} contactsArray={contacts} />
+        <h2>Contacts</h2>
+        <Filter value={filter} handleOnChangeFilter={handleOnChangeFilter} />
+        <Contacts
+          findContacts={findContacts}
+          onRemoveContact={onRemoveContact}
+          value={filter}
+          handleOnChangeFilter={handleOnChangeFilter}
+        />
+      </Section>
     </>
   );
 }

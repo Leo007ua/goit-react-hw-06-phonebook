@@ -1,24 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormStyled } from './FormStyled';
-// import { useState } from 'react';
 
 function Form({ formAddContact }) {
-  const {nameContact, number} = useSelector(state => state.form);
-  // const number = useSelector(state => state.form.number);
-  // const [nameContact, setNameContact] = useState('');
-  // const [number, setNumber] = useState('');
-  const dispatch = useDispatch()
+  const [nameContact, setNameContact] = useState('');
+  const [number, setNumber] = useState('');
 
-  const handleOnChange = evt => {
-    const { name, value } = evt.currentTarget;
+  const handleOnChange = event => {
+    const { name, value } = event.currentTarget;
     if (name === 'name') {
-      // setNameContact(value);
-      dispatch({ type: "form/setNameContact", payload: value });
+      setNameContact(value);
     }
     if (name === 'number') {
-      // setNumber(value);
-      dispatch({ type: "form/setNumber", payload: value });
+      setNumber(value);
     }
   };
 
@@ -27,16 +21,14 @@ function Form({ formAddContact }) {
     formAddContact({ name: nameContact, number });
     reset();
   };
-  const reset = () => {
-    // setNameContact('');
-    // setNumber('');
-    dispatch({ type: "form/setNameContact", payload: '' });
-    dispatch({ type: "form/setNumber", payload: '' });
 
+  const reset = () => {
+    setNameContact('');
+    setNumber('');
   };
 
   return (
-    <> 
+    <>
       <FormStyled onSubmit={handleOnSubmit}>
         <label>
           <span>Name</span>

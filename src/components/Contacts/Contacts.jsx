@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import { ContactsDivStyled } from './ContactsStyled';
 import ContactItem from 'components/ContactItem/ContactItem';
 
-function Contacts({ filteredContact, onRemoveContact }) {
+function Contacts({ findContacts, onRemoveContact }) {
   return (
     <>
       <ContactsDivStyled>
-        {filteredContact.map(({ id, name, number }) => {
+        {findContacts.map(({ id, name, number }) => {
           return (
             <ContactItem
               key={id}
@@ -23,7 +23,7 @@ function Contacts({ filteredContact, onRemoveContact }) {
 }
 
 Contacts.propTypes = {
-  filteredContact: PropTypes.arrayOf(
+  findContacts: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
