@@ -1,13 +1,10 @@
-const { createSlice, nanoid } = require('@reduxjs/toolkit');
+import initialState from './initialState';
 
-const initialState = {
-  contacts: [],
-  filter: '',
-};
+const { createSlice, nanoid } = require('@reduxjs/toolkit');
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState,
+  initialState: initialState,
 
   reducers: {
     addContact: {
